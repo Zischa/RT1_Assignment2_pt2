@@ -12,20 +12,20 @@ class Turtle(Node):
 		self.turtle_vel = Twist()
 		self.current_position = None
 		
-	def controll_turtle (self,x,z):
+	def controll_turtle (self,x,y,z):
 		try:
 			self.turtle_vel.linear.x = x
+			self.turtle_vel.linear.y = y
 			self.turtle_vel.angular.z = z
 			self.publisher_.publish(self.turtle_vel)
-			self.get_logger().info(f'Linear velocity along x: {self.velocity.linear.x}')
-			self.get_logger().info(f'Angular velocity along z: {self.velocity.angular.z}')
+			
 		except Exception as e:
 			self.get_logger().info(f'Error...\n')
 	
 	
 	def odom_callback (self,msg):
 		try:
-			self.current_position_msg.pose.pose.position
+			self.current_position=msg.pose.pose.position
 			self.get_logger().info (f'Actual position: x = {self.current_position.x}, y= {self.current_position.y}')
 		except Exception as e:
 			self.get_logger().info(f'Error...\n')
@@ -33,8 +33,9 @@ class Turtle(Node):
 	def user_input(self):
 		try:
 			x = float(input("Choose linear velocity x: "))
+			y = float(input("Choose linear velocity y: "))
 			z = float(input("Choose angular velocity z: "))
-			return x,z
+			return x,y,z
 		except ValueError:
 			print("Non valid input. Please, try again...\n")
 			return None, None
@@ -45,11 +46,11 @@ class Turtle(Node):
 			if x is not None and z is not None:
 				self.controll_turtle(x,z)
 				time.sleep(1)
-				self.controll_turtle(0.0, 0.0, 0.0)
+				self.controll_turtle(0.0, 0.0,0.0)
 				if self.current_position:
 					rclpy.spin_once(self)
 				else:
-					print("Turtle is not ready...\n")
+					print("Turtle is not moving!\n\n")
 
 def main (args=None):
 	rclpy.init(args=args)
