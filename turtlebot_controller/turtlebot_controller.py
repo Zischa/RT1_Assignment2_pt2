@@ -38,13 +38,13 @@ class Turtle(Node):
 			return x,y,z
 		except ValueError:
 			print("Non valid input. Please, try again...\n")
-			return None, None
+			return None, None, None
 	
 	def run(self):
 		while rclpy.ok():
-			x,z = self.user_input()
-			if x is not None and z is not None:
-				self.controll_turtle(x,z)
+			x,y,z = self.user_input()
+			if x is not None and y is not None and z is not None:
+				self.controll_turtle(x,y,z)
 				time.sleep(1)
 				self.controll_turtle(0.0, 0.0,0.0)
 				if self.current_position:
